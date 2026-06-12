@@ -5,6 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
 
   :dependencies [[org.clojure/clojure "1.11.1"]
+                 [com.stuartsierra/component "1.2.0"]
                  [nubank/matcher-combinators "3.10.0"]
                  [nubank/state-flow "5.20.1"]
                  [org.clojure/test.check "1.1.3"]
