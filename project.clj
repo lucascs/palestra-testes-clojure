@@ -10,5 +10,9 @@
                  [nubank/state-flow "5.20.1"]
                  [org.clojure/test.check "1.1.3"]
                  [prismatic/schema "1.4.1"]]
+  :source-paths ["src"
+                 "repositories/conta-bancaria/src"
+                 "repositories/pagamentos/src"
+                 "repositories/pix/src"]
   :profiles {:dev {:source-paths ["dev"]}}
   :repl-options {:init-ns palestra-testes-clojure.core})

@@ -189,7 +189,32 @@ State agora é um **system-map de Sierra Components** rodando: http-client, mess
       (nil? (s/check model.pagamento/Autorizado interno)))))
 ```
 
-Estilo Sachem: gera amostras do externo, valida o subset interno.
+Estilo Sachem: gera amostras do produtor, valida o subset consumidor.
+
+---
+
+# Camada 8 · Testes multi-serviço
+
+Testar o comportamento em isolado de cada serviço não dá garantias o suficiente para fluxos mais complicados. 
+Testar só o contrato é só uma validação sintática, não semântica.
+
+```clojure
+(def systems {:conta-bancaria (conta-bancaria.system/test-system)
+              :pagamentos (pagamentos.system/test-system)
+              :pix (pix.system/test-system)})
+
+(defflow pagamento-do-pix-com-saldo-da-conta
+   {:init    (inicia-multi-services systems)}
+  
+   [conta (conta-bancaria/cria-conta! {:titular "Lucas" :saldo 1000M})
+    chave-pix (pix/chave "manda-o-pix")]
+         (pagamentos/autoriza! {:origem conta :destino chave-pix :valor 300M})
+         
+   (match? 700M (conta-bancaria/saldo conta))
+         
+   (match? [{:chave "manda-o-pix"
+             :valor 300M}] (pix/transacoes)))
+```
 
 ---
 
