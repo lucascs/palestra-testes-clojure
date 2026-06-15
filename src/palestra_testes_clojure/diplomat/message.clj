@@ -1,6 +1,6 @@
-(ns palestra-testes-clojure.components.message-client
-  "Componente de mensageria. O stub registra as mensagens publicadas
-   em um atom, para o teste poder fazer assert depois."
+(ns palestra-testes-clojure.diplomat.message
+  "Diplomata de mensageria. O stub registra as mensagens publicadas em
+   um atom, para o teste poder fazer assert depois."
   (:require [com.stuartsierra.component :as component]))
 
 (defprotocol MessageClient

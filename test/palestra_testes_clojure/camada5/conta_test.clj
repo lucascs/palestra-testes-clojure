@@ -1,14 +1,13 @@
 (ns palestra-testes-clojure.camada5.conta-test
   "Camada 5: state-flow onde o 'mundo' contém um banco em memória.
-   O state é {:db (atom ...)} — as operações mutam o atom; os asserts
+   O state é {:db (atom ...)} — controller.conta muta o atom; os asserts
    leem dele via state/gets."
-  (:require [clojure.test :refer [deftest]]
-            [matcher-combinators.matchers :as m]
+  (:require [matcher-combinators.matchers :as m]
             [state-flow.api :refer [defflow flow]]
             [state-flow.assertions.matcher-combinators :refer [match?]]
             [state-flow.state :as state]
-            [palestra-testes-clojure.camada5.conta :as conta]
-            [palestra-testes-clojure.camada5.db    :as db]))
+            [palestra-testes-clojure.controller.conta :as conta]
+            [palestra-testes-clojure.db.conta         :as db]))
 
 ;; ── Helpers que falam com o mundo ──────────────────────────────────────────
 
@@ -28,7 +27,7 @@
   (state/gets (fn [{:keys [db]}] (db/all db))))
 
 (defn- mundo-vazio []
-  {:db (db/novo-db)})
+  {:db (db/novo)})
 
 ;; ── Flows ──────────────────────────────────────────────────────────────────
 

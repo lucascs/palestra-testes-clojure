@@ -1,4 +1,5 @@
-(ns palestra-testes-clojure.core)
+(ns palestra-testes-clojure.logic.math
+  "Funções puras de exemplo para Camadas 1 e 2.")
 
 (defn eh-par?
   "Retorna true se `x` é um inteiro par."

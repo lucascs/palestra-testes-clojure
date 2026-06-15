@@ -1,5 +1,5 @@
-(ns palestra-testes-clojure.components.http-client
-  "Componente HTTP. A produção (HttpClient) faria de fato a chamada;
+(ns palestra-testes-clojure.diplomat.http
+  "Diplomata HTTP. A produção (HttpClient) faria a chamada de fato;
    o stub (StubHttpClient) só registra as chamadas e devolve respostas
    pré-configuradas — é o que os state-flows usam."
   (:require [com.stuartsierra.component :as component]))

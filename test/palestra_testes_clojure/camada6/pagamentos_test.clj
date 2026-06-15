@@ -1,15 +1,14 @@
-(ns palestra-testes-clojure.pagamentos-flow-test
-  "Camada 4 (revisitada): testes em estilo state-flow onde o 'estado'
-   é um system-map de Sierra Components rodando. Cada flow começa com
-   :init = (component/start (test-system ...)) e :cleanup = component/stop."
-  (:require [clojure.test :refer [deftest]]
-            [com.stuartsierra.component :as component]
+(ns palestra-testes-clojure.camada6.pagamentos-test
+  "Camada 6: state-flow onde o estado é um system-map de Sierra
+   Components iniciado. :init = (component/start (test-system ...)),
+   :cleanup = component/stop."
+  (:require [com.stuartsierra.component :as component]
             [matcher-combinators.matchers :as m]
             [state-flow.api :refer [defflow flow]]
             [state-flow.assertions.matcher-combinators :refer [match?]]
             [state-flow.state :as state]
-            [palestra-testes-clojure.components.pagamentos :as pagamentos]
-            [palestra-testes-clojure.components.system     :as system]))
+            [palestra-testes-clojure.controller.pagamentos :as pagamentos]
+            [palestra-testes-clojure.system                :as system]))
 
 ;; ── Helpers que falam com o sistema dentro do state-flow ───────────────────
 
@@ -66,4 +65,5 @@
   (pagamentos/autoriza (:pagamentos sys) {:pagamento-id 1 :valor 10M})
   @(:chamadas   (:http-client    sys))
   @(:publicadas (:message-client sys))
-  (component/stop sys))
+  (component/stop sys)
+  )

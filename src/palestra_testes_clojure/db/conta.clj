@@ -1,8 +1,8 @@
-(ns palestra-testes-clojure.camada5.db
-  "Mini-banco em memória, atom-backed. A API imita o que faríamos
-   contra um banco de verdade: save!, find-by-titular, all.")
+(ns palestra-testes-clojure.db.conta
+  "Persistência de contas. Implementação em atom para os testes —
+   em produção seria Datomic, DynamoDB, etc.")
 
-(defn novo-db []
+(defn novo []
   (atom {:contas {}}))
 
 (defn save! [db conta]
