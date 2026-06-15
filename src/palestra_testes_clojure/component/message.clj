@@ -1,13 +1,13 @@
 (ns palestra-testes-clojure.component.message
-  "Componente de mensageria genérico. O stub registra as mensagens
-   publicadas em um atom, para o teste poder fazer assert depois.
-   Os diplomats é que sabem em qual tópico publicar cada coisa."
+  "Componente de mensageria. Recebe os topic-bookmarks na construção:
+   cada bookmark mapeia uma chave de domínio (ex. `:pagamentos/autorizado`)
+   para o tópico real (`\"PAGAMENTOS.AUTORIZADO\"`) e o schema do payload."
   (:require [com.stuartsierra.component :as component]))
 
 (defprotocol MessageClient
-  (publish [this topic message]))
+  (publish [this bookmark payload]))
 
-(defrecord StubMessageClient [publicadas]
+(defrecord StubMessageClient [bookmarks publicadas]
   component/Lifecycle
   (start [this]
     (reset! publicadas [])
@@ -16,8 +16,11 @@
     this)
 
   MessageClient
-  (publish [_ topic message]
-    (swap! publicadas conj {:topic topic :message message})))
+  (publish [_ bookmark payload]
+    (let [{:keys [topic]} (get bookmarks bookmark)]
+      (swap! publicadas conj {:bookmark bookmark
+                              :topic    topic
+                              :payload  payload}))))
 
-(defn novo-stub []
-  (->StubMessageClient (atom [])))
+(defn novo-stub [bookmarks]
+  (->StubMessageClient bookmarks (atom [])))

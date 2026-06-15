@@ -1,17 +1,27 @@
 (ns palestra-testes-clojure.component.http
-  "Componente HTTP genérico. A produção (HttpClient) faria a chamada de
-   fato; o stub (StubHttpClient) só registra as chamadas e devolve
-   respostas pré-configuradas — é o que os state-flows usam.
-   Os diplomats são quem traduz domínio em URLs concretas."
-  (:require [com.stuartsierra.component :as component]))
+  "Componente HTTP. Recebe um mapa de bookmarks na construção: cada
+   bookmark conhece sua URL template (com `:placeholders`) e pode anotar
+   schemas, service, etc. As chamadas referenciam apenas a chave do
+   bookmark e os `:path-params` — o componente faz a interpolação."
+  (:require [clojure.string :as str]
+            [com.stuartsierra.component :as component]))
 
 (defprotocol HttpClient
-  (GET  [this url])
-  (POST [this url body]))
+  (GET  [this opts])
+  (POST [this opts]))
+
+(defn- interpolate [template path-params]
+  (reduce-kv (fn [u k v]
+               (str/replace u (str ":" (name k)) (str v)))
+             template
+             (or path-params {})))
+
+(defn resolve-url [bookmarks bookmark path-params]
+  (-> bookmarks (get bookmark) :url (interpolate path-params)))
 
 ;; --- stub para testes ------------------------------------------------------
 
-(defrecord StubHttpClient [respostas chamadas]
+(defrecord StubHttpClient [bookmarks respostas chamadas]
   component/Lifecycle
   (start [this]
     (reset! chamadas [])
@@ -20,17 +30,20 @@
     this)
 
   HttpClient
-  (GET [_ url]
-    (swap! chamadas conj {:method :get :url url})
-    (or (get @respostas [:get url])
-        {:status 404}))
-  (POST [_ url body]
-    (swap! chamadas conj {:method :post :url url :body body})
-    (or (get @respostas [:post url])
-        {:status 201})))
+  (GET [_ {:keys [bookmark path-params]}]
+    (let [url (resolve-url bookmarks bookmark path-params)]
+      (swap! chamadas conj {:method :get :bookmark bookmark :url url})
+      (or (get @respostas bookmark)
+          {:status 404})))
+  (POST [_ {:keys [bookmark path-params body]}]
+    (let [url (resolve-url bookmarks bookmark path-params)]
+      (swap! chamadas conj {:method :post :bookmark bookmark :url url :body body})
+      (or (get @respostas bookmark)
+          {:status 201}))))
 
 (defn novo-stub
-  "respostas: mapa {[:get \"/url\"] {:status 200 :body …}, …}"
-  ([] (novo-stub {}))
-  ([respostas]
-   (->StubHttpClient (atom respostas) (atom []))))
+  "respostas: mapa {:bookmark-key {:status 200 :body …}, …}.
+   Bookmarks vêm do diplomat dono."
+  ([bookmarks] (novo-stub bookmarks {}))
+  ([bookmarks respostas]
+   (->StubHttpClient bookmarks (atom respostas) (atom []))))

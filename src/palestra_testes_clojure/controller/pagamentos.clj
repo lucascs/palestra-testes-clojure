@@ -21,4 +21,4 @@
     (autorizador/publica-resultado! message-client resultado
                                     {:pagamento-id pagamento-id :valor valor})
     {:pagamento-id pagamento-id
-     :autorizado?  (= :autorizado resultado)}))
+     :autorizado?  (= :pagamentos/autorizado resultado)}))
