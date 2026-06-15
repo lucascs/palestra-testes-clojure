@@ -218,18 +218,54 @@ Testar só o contrato é só uma validação sintática, não semântica.
 
 ---
 
+# Camada 9 · Fronteiras de domínio
+
+Microserviços são unidades muito granulares, detalhes de implementação. Serviços com muitos clientes acabam
+tendo seus mocks duplicados em muitos lugares. Mocks te dão sintaxe, não semântica.
+
+### Boundary APIs
+Cada domínio define qual é a sua API externa, assim escondendo detalhes de implementação de qual(is) é(são) os serviços 
+que implementam a API.
+
+### Contratos explícitos
+Acordos de serviço (SLAs e SLOs) podem ser declarados na API para os seus clientes. Propriedades invariantes podem ser definidas
+e validadas. 
+
+### Simuladores, ou mocks inteligentes
+Mocks reutilizáveis, ou mesmo simuladores de API, que mantém as propriedades principais da API mesmo com uma implementação simplificada
+podem ser providos pelos donos da API, facilitando o teste de seus clientes.
+
+### Testes de protocolo
+APIs como conjunto de operações podem também definir um protocolo, por exemplo a sequência esperada das chamadas, casos
+de falha, semânticas esperadas de cada retorno. Assim, uma suíte de testes pode criar uma validação que pode ser rodada para
+qualquer implementação desta API.
+
+### Receitas
+Uma parte importante de testes é preparar o contexto inicial. Os donos das APIs também podem provêr um conjunto de receitas
+que preparam os dados do domínio antes de começar os testes. Ex: conta criada com 1000 de saldo, cartão de crédito com 3 faturas
+fechadas, cliente atrasado, etc.
+
+### Ambientes multi-serviço
+Um domínio atrás de uma fronteira pode ser rodado em um ambiente local ou remoto que contêm só os serviços deste domínio,
+facilitando a construção de funcionalidades complexas, a conexão com emuladores de celular, a validação manual de comportamentos
+complexos.
+
+
+---
+
 # Recap
 
-| Camada | Ferramenta | Cobertura |
-|---|---|---|
-| 0 | REPL | exploração |
-| 1 | `clojure.test` | exemplo-a-exemplo |
-| 2 | `test.check` | propriedade |
-| 3 | `matcher-combinators` | dado |
-| 4 | `plumatic/schema` | contrato de função |
-| 5 | `state-flow` | fluxo + DB |
-| 6 | `state-flow` + Sierra Components | fluxo + IO |
-| 7 | `test.check` + schema | contrato externo |
+| Camada | Ferramenta                       | Cobertura                     |
+|--------|----------------------------------|-------------------------------|
+| 0      | REPL                             | exploração                    |
+| 1      | `clojure.test`                   | exemplo-a-exemplo             |
+| 2      | `test.check`                     | propriedade                   |
+| 3      | `matcher-combinators`            | dado                          |
+| 4      | `plumatic/schema`                | contrato de função            |
+| 5      | `state-flow`                     | fluxo + DB                    |
+| 6      | `state-flow` + Sierra Components | fluxo + IO                    |
+| 7      | sachem                           | contrato externo              |
+| 8      | multi-service tests              | Interação real entre serviços |
 
 **Cada camada cobre o que a anterior não cobre.**
 
