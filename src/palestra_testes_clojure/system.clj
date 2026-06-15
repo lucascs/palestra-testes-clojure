@@ -3,9 +3,9 @@
    aqui só expomos a versão de teste, parametrizada pelas respostas
    que o stub deve devolver."
   (:require [com.stuartsierra.component :as component]
-            [palestra-testes-clojure.controller.pagamentos :as pagamentos]
-            [palestra-testes-clojure.diplomat.http    :as http]
-            [palestra-testes-clojure.diplomat.message :as msg]))
+            [palestra-testes-clojure.component.http    :as http]
+            [palestra-testes-clojure.component.message :as msg]
+            [palestra-testes-clojure.controller.pagamentos :as pagamentos]))
 
 (defn test-system
   ([] (test-system {}))

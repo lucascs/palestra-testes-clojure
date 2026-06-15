@@ -1,7 +1,8 @@
-(ns palestra-testes-clojure.diplomat.http
-  "Diplomata HTTP. A produção (HttpClient) faria a chamada de fato;
-   o stub (StubHttpClient) só registra as chamadas e devolve respostas
-   pré-configuradas — é o que os state-flows usam."
+(ns palestra-testes-clojure.component.http
+  "Componente HTTP genérico. A produção (HttpClient) faria a chamada de
+   fato; o stub (StubHttpClient) só registra as chamadas e devolve
+   respostas pré-configuradas — é o que os state-flows usam.
+   Os diplomats são quem traduz domínio em URLs concretas."
   (:require [com.stuartsierra.component :as component]))
 
 (defprotocol HttpClient
